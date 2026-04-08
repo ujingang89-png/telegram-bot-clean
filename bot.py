@@ -482,7 +482,11 @@ async def main():
             await app.initialize()
             await app.start()
             await app.updater.start_polling(drop_pending_updates=True)
-            await app.updater.idle()
+
+            # ✅ idle() 대신 무한 대기 (v20 호환)
+            while True:
+                await asyncio.sleep(1)
+
         except Exception as e:
             print(f"오류 발생, 5초 후 재시작: {e}")
             try:

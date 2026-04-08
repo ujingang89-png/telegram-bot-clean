@@ -155,13 +155,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         # ✅ 5. 시작시간 → 끝시간 선택
         elif query.data.startswith("start_"):
-            start_time = int(query.data.split("_")[1])
+            start_time = float(query.data.split("_")[1])
             context.user_data["start_time"] = start_time
 
             keyboard = []
             row = []
             start_time = float(context.user_data.get("start_time"))
-                for i in range(int(start_time), 24):
+            for i in range(int(start_time), 24):
                     for m in [0, 30]:
                         value = i + (0.5 if m == 30 else 0)
                         if value > start_time:

@@ -212,8 +212,12 @@ except BadRequest as e:
 
             await query.edit_message_text(text)
     except Exception as e:
-        print("🔥 에러 발생:", e)
-        await update.callback_query.message.reply_text(f"에러: {e}")
+        import traceback
+        print("🔥 에러 발생:", traceback.format_exc())
+        try:
+            await query.message.reply_text(f"에러: {e}")
+        except:
+            pass
 
 async def post_init(application):
     await application.bot.delete_webhook(drop_pending_updates=True)

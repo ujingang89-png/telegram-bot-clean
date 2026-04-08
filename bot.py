@@ -474,4 +474,24 @@ def run_web():
 
 threading.Thread(target=run_scheduler, daemon=True).start()
 threading.Thread(target=run_web, daemon=True).start()
-app.run_polling(drop_pending_updates=True)
+import signal
+
+async def main():
+    while True:
+        try:
+            await app.initialize()
+            await app.start()
+            await app.updater.start_polling(drop_pending_updates=True)
+            await app.updater.idle()
+        except Exception as e:
+            print(f"오류 발생, 5초 후 재시작: {e}")
+            try:
+                await app.updater.stop()
+                await app.stop()
+                await app.shutdown()
+            except:
+                pass
+            await asyncio.sleep(5)
+
+if __name__ == "__main__":
+    asyncio.run(main())

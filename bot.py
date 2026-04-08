@@ -132,7 +132,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  InlineKeyboardButton("무관", callback_data="gender_무관")]
             ]
 
-            await query.edit_message_text("성별 선택", reply_markup=InlineKeyboardMarkup(keyboard))
+            from telegram.error import BadRequest
+
+try:
+    await query.edit_message_text("성별 선택", reply_markup=InlineKeyboardMarkup(keyboard))
+except BadRequest as e:
+    if "Message is not modified" not in str(e):
+        raise e
 
         # ✅ 4. 성별 → 시작시간 선택
         elif query.data.startswith("gender_"):

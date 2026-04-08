@@ -160,24 +160,23 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             keyboard = []
             row = []
-            start_time = float(context.user_data.get("start_time"))
             for i in range(int(start_time), 24):
                 for m in [0, 30]:
                     value = i + (0.5 if m == 30 else 0)
                     if value > start_time:
                         label = f"{i}:{str(m).zfill(2)}"
                         row.append(InlineKeyboardButton(label, callback_data=f"end_{value}"))
-                if len(row) == 4:
-                    keyboard.append(row)
-                    row = []
+                        if len(row) == 4:
+                            keyboard.append(row)
+                            row = []
+            if row:
                 keyboard.append(row)
 
             await query.edit_message_text("끝 시간 선택", reply_markup=InlineKeyboardMarkup(keyboard))
 
-
         # ✅ 6. 끝시간 → 결과
         elif query.data.startswith("end_"):
-            end_time = int(query.data.split("_")[1])
+            end_time = float(query.data.split("_")[1])
 
             days = context.user_data.get("days", [])
             gender = context.user_data.get("gender")
@@ -199,7 +198,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             result = list(set(result))
 
-            # ⭐ 여기 안에 있어야 함
             if not result:
                 text = "조건에 맞는 사람이 없습니다."
             else:
@@ -209,16 +207,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         print("🔥 에러 발생:", e)
         await update.callback_query.message.reply_text(f"에러: {e}")
+
 app = ApplicationBuilder().token(os.environ.get("BOT_TOKEN")).build()
 
 app.add_handler(CommandHandler("search", search))
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button_handler))
-
-import os
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
 
 import requests
 import schedule

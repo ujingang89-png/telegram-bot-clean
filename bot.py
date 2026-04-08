@@ -15,7 +15,7 @@ creds_dict = json.loads(creds_json)
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 
-sheet = client.open("섭외관리표").sheet1
+sheet = client.open("강철6부 가섭구인BOT").sheet1
 
 def find_people(day, gender, age_min, age_max, target_time):
     data = sheet.get_all_records()

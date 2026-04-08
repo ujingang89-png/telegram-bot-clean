@@ -162,15 +162,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             row = []
             start_time = float(context.user_data.get("start_time"))
             for i in range(int(start_time), 24):
-                    for m in [0, 30]:
-                        value = i + (0.5 if m == 30 else 0)
-                        if value > start_time:
-                            label = f"{i}:{str(m).zfill(2)}"
-                            row.append(InlineKeyboardButton(label, callback_data=f"end_{value}"))
+                for m in [0, 30]:
+                    value = i + (0.5 if m == 30 else 0)
+                    if value > start_time:
+                        label = f"{i}:{str(m).zfill(2)}"
+                        row.append(InlineKeyboardButton(label, callback_data=f"end_{value}"))
                 if len(row) == 4:
                     keyboard.append(row)
                     row = []
-            if row:
                 keyboard.append(row)
 
             await query.edit_message_text("끝 시간 선택", reply_markup=InlineKeyboardMarkup(keyboard))

@@ -4,6 +4,7 @@ import os
 import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackQueryHandler
+from telegram.error import BadRequest
 from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
@@ -58,12 +59,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("검색 시작", callback_data="start_search")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     await update.message.reply_text("검색을 시작하세요", reply_markup=reply_markup)
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
     try:
-        query = update.callback_query
         await query.answer()
 
         print("콜백 데이터:", query.data)
@@ -74,7 +74,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             days = ["월","화","수","목","금"]
             keyboard = []
-
             row = []
             for d in days:
                 row.append(InlineKeyboardButton(d, callback_data=f"day_{d}"))
@@ -83,7 +82,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     row = []
             if row:
                 keyboard.append(row)
-
             keyboard.append([InlineKeyboardButton("다음", callback_data="next_gender")])
 
             await query.edit_message_text("요일 선택 (복수 선택 가능)", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -101,10 +99,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 context.user_data["days"].append(selected_day)
 
             selected_days = context.user_data["days"]
-
             days = ["월","화","수","목","금"]
             keyboard = []
-
             row = []
             for d in days:
                 text = f"✅{d}" if d in selected_days else d
@@ -112,13 +108,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if len(row) == 4:
                     keyboard.append(row)
                     row = []
-
             if row:
                 keyboard.append(row)
-
             keyboard.append([InlineKeyboardButton("다음", callback_data="next_gender")])
 
-            await query.edit_message_text("요일 선택 (복수 선택 가능)", reply_markup=InlineKeyboardMarkup(keyboard))
+            try:
+                await query.edit_message_text("요일 선택 (복수 선택 가능)", reply_markup=InlineKeyboardMarkup(keyboard))
+            except BadRequest as e:
+                if "Message is not modified" not in str(e):
+                    raise e
 
         # ✅ 3. 다음 → 성별
         elif query.data == "next_gender":
@@ -131,14 +129,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  InlineKeyboardButton("여자", callback_data="gender_여자"),
                  InlineKeyboardButton("무관", callback_data="gender_무관")]
             ]
-
-            from telegram.error import BadRequest
-
-try:
-    await query.edit_message_text("성별 선택", reply_markup=InlineKeyboardMarkup(keyboard))
-except BadRequest as e:
-    if "Message is not modified" not in str(e):
-        raise e
+            await query.edit_message_text("성별 선택", reply_markup=InlineKeyboardMarkup(keyboard))
 
         # ✅ 4. 성별 → 시작시간 선택
         elif query.data.startswith("gender_"):
@@ -194,13 +185,11 @@ except BadRequest as e:
 
             for p in data:
                 days_list = str(p["요일"]).replace(" ", "").split(",")
-
                 for d in days:
                     if (d in days_list) and \
                        (p["성별"] == gender or gender == "무관") and \
                        (20 <= int(p["나이"]) <= 40) and \
                        (float(p["시작"]) <= end_time and float(p["끝"]) >= start_time):
-
                         result.append(p["이름"])
 
             result = list(set(result))
@@ -211,6 +200,7 @@ except BadRequest as e:
                 text = "가능한 사람:\n" + "\n".join(result)
 
             await query.edit_message_text(text)
+
     except Exception as e:
         import traceback
         print("🔥 에러 발생:", traceback.format_exc())
@@ -485,7 +475,6 @@ def run_web():
 
 threading.Thread(target=run_scheduler, daemon=True).start()
 threading.Thread(target=run_web, daemon=True).start()
-import signal
 
 async def main():
     while True:

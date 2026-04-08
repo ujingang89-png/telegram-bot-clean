@@ -71,7 +71,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if query.data == "start_search":
             context.user_data["days"] = []
 
-            days = ["월","화","수","목","금","토","일"]
+            days = ["월","화","수","목","금"]
             keyboard = []
 
             row = []
@@ -101,7 +101,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             selected_days = context.user_data["days"]
 
-            days = ["월","화","수","목","금","토","일"]
+            days = ["월","화","수","목","금"]
             keyboard = []
 
             row = []

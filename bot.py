@@ -202,7 +202,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         print("🔥 에러 발생:", e)
         await update.callback_query.message.reply_text(f"에러: {e}")
-app = ApplicationBuilder().token("8703437303:AAEsfMv3-HjuRZfU7VRAxMvlYm-9ML4IOdc").build()
+app = ApplicationBuilder().token(os.environ.get("BOT_TOKEN")).build()
 
 app.add_handler(CommandHandler("search", search))
 app.add_handler(CommandHandler("start", start))

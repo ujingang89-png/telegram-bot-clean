@@ -27,7 +27,7 @@ def find_people(day, gender, age_min, age_max, target_time):
         if (day in days) and \
            (p["성별"] == gender or gender == "무관") and \
            (age_min <= int(p["나이"]) <= age_max) and \
-           (int(p["시작"]) <= target_time <= int(p["끝"])):
+           (float(p["시작"]) <= target_time <= float(p["끝"])):
 
             result.append(p["이름"])
 
@@ -141,10 +141,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             keyboard = []
             row = []
             for i in range(10, 24):
-                row.append(InlineKeyboardButton(str(i), callback_data=f"start_{i}"))
-                if len(row) == 4:
-                    keyboard.append(row)
-                    row = []
+                for m in [0, 30]:
+                    label = f"{i}:{str(m).zfill(2)}"
+                    value = i + (0.5 if m == 30 else 0)
+                    row.append(InlineKeyboardButton(label, callback_data=f"start_{value}"))
+                    if len(row) == 4:
+                        keyboard.append(row)
+                        row = []
             if row:
                 keyboard.append(row)
 
@@ -157,8 +160,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             keyboard = []
             row = []
-            for i in range(start_time, 24):
-                row.append(InlineKeyboardButton(str(i), callback_data=f"end_{i}"))
+            start_time = float(context.user_data.get("start_time"))
+                for i in range(int(start_time), 24):
+                    for m in [0, 30]:
+                        value = i + (0.5 if m == 30 else 0)
+                        if value > start_time:
+                            label = f"{i}:{str(m).zfill(2)}"
+                            row.append(InlineKeyboardButton(label, callback_data=f"end_{value}"))
                 if len(row) == 4:
                     keyboard.append(row)
                     row = []
@@ -186,7 +194,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     if (d in days_list) and \
                        (p["성별"] == gender or gender == "무관") and \
                        (20 <= int(p["나이"]) <= 40) and \
-                       (int(p["시작"]) <= end_time and int(p["끝"]) >= start_time):
+                       (float(p["시작"]) <= end_time and float(p["끝"]) >= start_time):
 
                         result.append(p["이름"])
 

@@ -1,4 +1,6 @@
 import gspread
+import os
+import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackQueryHandler
 from oauth2client.service_account import ServiceAccountCredentials
@@ -8,7 +10,9 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 scope = ["https://spreadsheets.google.com/feeds",
          "https://www.googleapis.com/auth/drive"]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name("apt-index-492614-v9-53aa9fdf1795.json", scope)
+creds_json = os.environ.get("GOOGLE_CREDENTIALS")
+creds_dict = json.loads(creds_json)
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 
 sheet = client.open("섭외관리표").sheet1

@@ -293,13 +293,13 @@ def job_saturday_2130():
         last_sent_date_sat = now_date
         send_auto_message(CHAT_ID_3, MESSAGE_3, THREAD_ID_3)
 
-last_sent_date_thu = None
-def job_thursday_2300():
-    global last_sent_date_thu
+last_sent_date_sat = None
+def job_saturday_1900():
+    global last_sent_date_sat
     kst = datetime.now(pytz.timezone("Asia/Seoul"))
     now_date = kst.strftime("%Y-%m-%d")
-    if kst.weekday() == 3 and kst.strftime("%H:%M") in ["23:00", "23:01", "23:02"] and last_sent_date_thu != now_date:
-        last_sent_date_thu = now_date
+    if kst.weekday() == 5 and kst.strftime("%H:%M") in ["19:00", "19:01", "19:02"] and last_sent_date_sat != now_date:
+        last_sent_date_sat = now_date
         send_auto_message(CHAT_ID_4, MESSAGE_4)
 
 last_sent_date_wed = None

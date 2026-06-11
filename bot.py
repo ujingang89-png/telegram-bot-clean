@@ -260,11 +260,11 @@ MSG_WED_WORSHIP = "구역예배 교안은 금요일 오전 8시까지입니다. 
 MSG_THU_WORSHIP = "구역예배 교안은 금요일 오전 8시까지입니다. 8:01분이 될시에도 벌금입니다!"
 MSG_FRI_WORSHIP = "구역예배 교안 시간이 얼마 남지 않았습니다. 8:01분 되면 벌금입니다!"
 CHAT_ID_6 = "-1003736936810"
-MESSAGE_6 = "17시 핵사논의 있습니다"
+MESSAGE_6 = "금일 모임 후 핵사논의 있습니다"
 CHAT_ID_7 = "-1003736936810"
-MESSAGE_7 = "17시 핵사논의 있습니다"
+MESSAGE_7 = "금일 주간회의 후 전도피드백 있습니다"
 CHAT_ID_8 = "-1003736936810"
-MESSAGE_8 = "21시 핵사논의 있습니다"
+MESSAGE_8 = "금일 17시 핵사논의 있습니다"
 
 def send_auto_message(chat_id, text, thread_id=None):
     token = os.environ.get("BOT_TOKEN")
@@ -446,13 +446,13 @@ def job_worship_friday():
         last_sent_worship_fri = now_date
         send_auto_message(CHAT_ID_WORSHIP, MSG_FRI_WORSHIP)
 
-last_sent_date_tue = None
-def job_tuesday_0100():
-    global last_sent_date_tue
+last_sent_date_mon = None
+def job_monday_1600():
+    global last_sent_date_mon
     kst = datetime.now(pytz.timezone("Asia/Seoul"))
     now_date = kst.strftime("%Y-%m-%d")
-    if kst.weekday() == 1 and kst.strftime("%H:%M") in ["01:00", "01:01", "01:02"] and last_sent_date_tue != now_date:
-        last_sent_date_tue = now_date
+    if kst.weekday() == 0 and kst.strftime("%H:%M") in ["16:00", "16:01", "16:02"] and last_sent_date_mon != now_date:
+        last_sent_date_mon = now_date
         send_auto_message(CHAT_ID_6, MESSAGE_6)
 
 last_sent_date_thu = None
@@ -464,13 +464,13 @@ def job_thursday_0100():
         last_sent_date_thu = now_date
         send_auto_message(CHAT_ID_7, MESSAGE_7)
 
-last_sent_date_sat = None
-def job_saturday_0100():
-    global last_sent_date_sat
+last_sent_date_fri = None
+def job_friday_0100():
+    global last_sent_date_fri
     kst = datetime.now(pytz.timezone("Asia/Seoul"))
     now_date = kst.strftime("%Y-%m-%d")
-    if kst.weekday() == 5 and kst.strftime("%H:%M") in ["01:00", "01:01", "01:02"] and last_sent_date_sat != now_date:
-        last_sent_date_sat = now_date
+    if kst.weekday() == 4 and kst.strftime("%H:%M") in ["01:00", "01:01", "01:02"] and last_sent_date_fri != now_date:
+        last_sent_date_fri = now_date
         send_auto_message(CHAT_ID_8, MESSAGE_8)
 
 schedule.every().minute.do(job_if_kst)
@@ -492,7 +492,7 @@ schedule.every().minute.do(job_worship_tuesday)
 schedule.every().minute.do(job_worship_wednesday)
 schedule.every().minute.do(job_worship_thursday)
 schedule.every().minute.do(job_worship_friday)
-schedule.every().minute.do(job_tuesday_0100)
+schedule.every().minute.do(job_monday_1600)
 schedule.every().minute.do(job_thursday_0100)
 schedule.every().minute.do(job_saturday_0100)
 

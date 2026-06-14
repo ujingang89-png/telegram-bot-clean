@@ -475,7 +475,6 @@ def job_friday_0100():
 
 schedule.every().minute.do(job_if_kst)
 schedule.every().minute.do(job_saturday_2130)
-schedule.every().minute.do(job_thursday_2300)
 schedule.every().minute.do(job_wednesday_2300)
 schedule.every().minute.do(job_monday_10)
 schedule.every().minute.do(job_tuesday)
@@ -494,7 +493,7 @@ schedule.every().minute.do(job_worship_thursday)
 schedule.every().minute.do(job_worship_friday)
 schedule.every().minute.do(job_monday_1600)
 schedule.every().minute.do(job_thursday_0100)
-schedule.every().minute.do(job_saturday_0100)
+schedule.every().minute.do(job_friday_0100)
 
 @flask_app.route('/')
 def home():

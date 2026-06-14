@@ -72,12 +72,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if query.data == "start_search":
             context.user_data["days"] = []
 
-            days = ["월","화","수","목","금"]
+            days = ["월","화","수","목","금","토"]
             keyboard = []
             row = []
             for d in days:
                 row.append(InlineKeyboardButton(d, callback_data=f"day_{d}"))
-                if len(row) == 4:
+                if len(row) == 3:
                     keyboard.append(row)
                     row = []
             if row:
@@ -99,13 +99,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 context.user_data["days"].append(selected_day)
 
             selected_days = context.user_data["days"]
-            days = ["월","화","수","목","금"]
+            days = ["월","화","수","목","금","토"]
             keyboard = []
             row = []
             for d in days:
                 text = f"✅{d}" if d in selected_days else d
                 row.append(InlineKeyboardButton(text, callback_data=f"day_{d}"))
-                if len(row) == 4:
+                if len(row) == 3:
                     keyboard.append(row)
                     row = []
             if row:

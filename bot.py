@@ -265,6 +265,8 @@ CHAT_ID_7 = "-1003736936810"
 MESSAGE_7 = "금일 주간회의 후 전도피드백 있습니다"
 CHAT_ID_8 = "-1003736936810"
 MESSAGE_8 = "금일 17시 핵사논의 있습니다"
+CHAT_ID_9 = "-1001931568848"
+MESSAGE_9 = "일보 올려주세요\n1 2 3 4 5 6 7 8"
 
 def send_auto_message(chat_id, text, thread_id=None):
     token = os.environ.get("BOT_TOKEN")
@@ -473,6 +475,15 @@ def job_friday_0100():
         last_sent_date_fri = now_date
         send_auto_message(CHAT_ID_8, MESSAGE_8)
 
+last_sent_date = None
+def job_if_kst():
+    global last_sent_date
+    kst = datetime.now(pytz.timezone("Asia/Seoul"))
+    now_date = kst.strftime("%Y-%m-%d")
+    if kst.strftime("%H:%M") in ["22:00", "22:01", "22:02"] and last_sent_date != now_date:
+        last_sent_date = now_date
+        send_auto_message(CHAT_ID_9, MESSAGE_9)
+
 schedule.every().minute.do(job_if_kst)
 schedule.every().minute.do(job_saturday_2130)
 schedule.every().minute.do(job_wednesday_2300)
@@ -494,6 +505,7 @@ schedule.every().minute.do(job_worship_friday)
 schedule.every().minute.do(job_monday_1600)
 schedule.every().minute.do(job_thursday_0100)
 schedule.every().minute.do(job_friday_0100)
+schedule.every().minute.do(job_if_kst)
 
 @flask_app.route('/')
 def home():

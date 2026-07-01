@@ -480,7 +480,7 @@ def job_if_kst():
     global last_sent_date
     kst = datetime.now(pytz.timezone("Asia/Seoul"))
     now_date = kst.strftime("%Y-%m-%d")
-    if kst.strftime("%H:%M") in ["22:00", "22:01", "22:02"] and last_sent_date != now_date:
+    if kst.strftime("%H:%M") in ["20:00", "20:01", "20:02"] and last_sent_date != now_date:
         last_sent_date = now_date
         send_auto_message(CHAT_ID_9, MESSAGE_9)
 
